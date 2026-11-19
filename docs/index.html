@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Подборка игровых ассетов из темы Assets с фильтрацией по тегам.">
+    <meta name="theme-color" content="#101016">
+    <title>Assets — каталог игровых ассетов</title>
+    <link rel="stylesheet" href="./styles.css">
+    <script defer src="./catalog.js"></script>
+    <script defer src="./gallery.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell header-content">
+        <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Assets</div>
+        <span class="demo-label">Тестовая подборка</span>
+      </div>
+    </header>
+
+    <main class="shell">
+      <div class="intro">
+        <h1>Каталог ассетов</h1>
+        <p>Модели, окружение, интерфейсы и эффекты для игр.</p>
+      </div>
+
+      <section aria-label="Галерея ассетов">
+        <div class="filter-panel">
+          <div class="filter-bar">
+            <button class="filter" id="all-filter" type="button">Все ассеты</button>
+            <p class="result-count" id="result-count" role="status"></p>
+          </div>
+          <div class="filters" id="filters" role="group" aria-label="Фильтры по тегам"></div>
+        </div>
+        <ul class="gallery" id="gallery" role="list"></ul>
+        <p class="empty-state" id="empty-state" hidden>По выбранным тегам ничего не найдено.</p>
+        <noscript><p class="empty-state">Для работы галереи нужен JavaScript.</p></noscript>
+      </section>
+      <button class="export-button" id="export-button" type="button" hidden>Экспорт</button>
+    </main>
+
+    <template id="asset-template">
+      <li class="asset">
+        <button class="asset-button" type="button" aria-haspopup="dialog">
+          <span class="asset-media">
+            <img class="asset-image" alt="" decoding="async">
+            <span class="asset-preview" aria-hidden="true"><span class="asset-preview-text"></span></span>
+          </span>
+          <span class="asset-caption">
+            <span class="asset-title"></span>
+            <span class="asset-tags"></span>
+          </span>
+        </button>
+        <button class="asset-select" type="button" aria-pressed="false" title="Выбрать для экспорта">
+          <span class="asset-select-icon" aria-hidden="true"></span>
+        </button>
+      </li>
+    </template>
+
+    <dialog id="asset-dialog" aria-labelledby="detail-title" aria-describedby="detail-description">
+      <div class="detail">
+        <button class="detail-close" type="button" aria-label="Закрыть описание" autofocus>×</button>
+        <img class="detail-image" id="detail-image" alt="" decoding="async">
+        <div class="detail-body">
+          <h2 id="detail-title"></h2>
+          <div class="asset-tags" id="detail-tags"></div>
+          <p id="detail-description"></p>
+          <div class="detail-links">
+            <a class="detail-link" id="detail-link" target="_blank" rel="noopener noreferrer">Открыть пост в Telegram</a>
+            <a class="detail-link" id="detail-store-link" target="_blank" rel="noopener noreferrer" hidden>Unity Asset Store</a>
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>

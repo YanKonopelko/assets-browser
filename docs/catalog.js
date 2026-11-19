@@ -1,0 +1,62 @@
+const tagCategories = {
+  type: 'Тип ассета',
+  theme: 'Стиль и тематика',
+  technology: 'Технологии',
+};
+
+const assetCatalog = [
+  {
+    title: 'INTERFACE - Fantasy Menus',
+    image: './previews/fantasy-menus.jpg',
+    imageAlt: 'Превью набора интерфейсов Fantasy Menus.',
+    tags: { type: ['Интерфейсы'], theme: ['Фэнтези', 'RPG'], technology: ['Unity', 'uGUI'] },
+    description: 'Fantasy UI набор для Unity: 200+ готовых меню и popup-префабов с анимациями, 700+ иконок и спрайтов, гибкая настройка и стиль под RPG и fantasy-игры.',
+    postUrl: 'https://t.me/c/3983762173/324/769',
+    storeUrl: 'https://assetstore.unity.com/packages/2d/gui/fantasy-menus-synty-interface-gui-311498',
+  },
+  {
+    title: 'Sci-Fi Civilians – Sidekick Modular Characters',
+    image: './previews/sci-fi-civilians.jpg',
+    imageAlt: 'Превью модульных персонажей Sci-Fi Civilians.',
+    tags: { type: ['Персонажи'], theme: ['Sci-fi'], technology: ['Unity', 'Runtime API'] },
+    description: 'Система создания sci-fi персонажей: 100+ модульных частей, кастомизация внешности, одежда, маски и аксессуары, плюс готовый character creator и runtime API для создания персонажей прямо в игре.',
+    postUrl: 'https://t.me/c/3983762173/324/767',
+    storeUrl: 'https://assetstore.unity.com/packages/3d/characters/sci-fi-civilians-sidekick-modular-characters-by-synty-325900',
+  },
+  {
+    title: 'CUBE: Sci Fi Interiors Pack',
+    image: './previews/sci-fi-interiors.jpg',
+    imageAlt: 'Превью набора модульных интерьеров CUBE: Sci Fi Interiors Pack.',
+    tags: { type: ['Окружение'], theme: ['Sci-fi', 'Стилизация'], technology: ['Unity', 'Low poly'] },
+    description: 'Набор низкополигональных (стилизованных) модульных 3D-моделей для создания sci-fi интерьеров: 51 префаб (стены, потолки, двери, медицинская техника, компьютеры, кровати, вендинговые автоматы и т.д.) с демосценой. Вся геометрия использует всего 2 текстуры (альбедо + эмиссия) и весит 3.7 МБ.',
+    postUrl: 'https://t.me/c/3983762173/324/745',
+    storeUrl: 'https://assetstore.unity.com/packages/3d/environments/sci-fi/cube-sci-fi-interiors-pack-134181#description',
+  },
+  {
+    title: 'Dragon Water',
+    image: './previews/dragon-water.jpg',
+    imageAlt: 'Превью стилизованной воды Dragon Water.',
+    tags: { type: ['Эффекты'], theme: ['Стилизация'], technology: ['Unity', 'URP'] },
+    description: 'Система stylized воды для Unity: океан, водоёмы, пена, рябь, отражения, преломление, подводные эффекты, каустика и плавучесть, с хорошей производительностью для PC и mobile.',
+    postUrl: 'https://t.me/c/3983762173/324/733',
+    storeUrl: 'https://assetstore.unity.com/packages/tools/particles-effects/dragon-water-urp-254008',
+  },
+  {
+    title: 'Synty Animation - Base Locomotion',
+    image: './previews/base-locomotion.jpg',
+    imageAlt: 'Превью набора анимаций Synty Animation - Base Locomotion.',
+    tags: { type: ['Анимации'], technology: ['Unity', 'Mecanim'] },
+    description: 'Набор из 240+ анимаций для персонажей: ходьба, бег, прыжки, слайды и другие движения, с готовыми Mecanim-контроллерами, демо-сценой и примером character controller.',
+    postUrl: 'https://t.me/c/3983762173/324/731',
+    storeUrl: 'https://assetstore.unity.com/packages/3d/animations/synty-animation-base-locomotion-character-animset-280764',
+  },
+  {
+    title: 'City Adventure',
+    image: './previews/city-adventure.jpg',
+    imageAlt: 'Превью набора городского окружения City Adventure.',
+    tags: { type: ['Окружение'], theme: ['Город'], technology: ['Unity', 'URP'] },
+    description: 'Большой модульный набор для создания города: 160+ объектов, транспорт, магазины, станции, фабрики и готовые сцены, с системой трафика и оптимизацией под mobile, VR и PC.',
+    postUrl: 'https://t.me/c/3983762173/324/721',
+    storeUrl: 'https://assetstore.unity.com/packages/3d/environments/city-adventure-65307',
+  },
+];
