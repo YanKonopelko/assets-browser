@@ -12,6 +12,8 @@ const detailTags = document.querySelector('#detail-tags');
 const detailDescription = document.querySelector('#detail-description');
 const detailLink = document.querySelector('#detail-link');
 const detailStoreLink = document.querySelector('#detail-store-link');
+const detailRelated = document.querySelector('#detail-related');
+const detailRelatedLinks = document.querySelector('#detail-related-links');
 const activeTags = new Set();
 const selectedAssets = new Set();
 const pluralRules = new Intl.PluralRules('ru');
@@ -26,9 +28,19 @@ function tagLabels(tags) {
   });
 }
 
+function relatedPostUrl(asset, id) {
+  return new URL(String(id), asset.postUrl).href;
+}
+
 function openDetails(asset, tags) {
-  detailImage.src = asset.image;
-  detailImage.alt = asset.imageAlt;
+  detailImage.toggleAttribute('hidden', !asset.image);
+  if (asset.image) {
+    detailImage.src = asset.image;
+    detailImage.alt = asset.imageAlt ?? `Превью ${asset.title}`;
+  } else {
+    detailImage.removeAttribute('src');
+    detailImage.alt = '';
+  }
   detailTitle.textContent = asset.title;
   detailTags.replaceChildren(...tagLabels(tags));
   detailDescription.textContent = asset.description;
@@ -36,9 +48,23 @@ function openDetails(asset, tags) {
   detailStoreLink.hidden = !asset.storeUrl;
   if (asset.storeUrl) {
     detailStoreLink.href = asset.storeUrl;
+    detailStoreLink.textContent = asset.storeLabel ?? 'Unity Asset Store';
   } else {
     detailStoreLink.removeAttribute('href');
   }
+  const relatedPosts = asset.relatedPosts ?? [];
+  detailRelated.hidden = relatedPosts.length === 0;
+  detailRelated.open = false;
+  detailRelatedLinks.replaceChildren(...relatedPosts.map((id) => {
+    const item = document.createElement('li');
+    const link = document.createElement('a');
+    link.href = relatedPostUrl(asset, id);
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = `Пост №${id}`;
+    item.append(link);
+    return item;
+  }));
   dialog.showModal();
 }
 
@@ -57,8 +83,13 @@ const cards = assetCatalog.map((asset, index) => {
   button.setAttribute('aria-labelledby', title.id);
   button.setAttribute('aria-describedby', tagsContainer.id);
   selectButton.setAttribute('aria-label', `Выбрать для экспорта «${asset.title}»`);
-  image.src = asset.image;
-  image.loading = 'lazy';
+  if (asset.image) {
+    image.loading = 'lazy';
+    image.src = asset.image;
+  } else {
+    image.remove();
+    card.querySelector('.asset-no-preview').hidden = false;
+  }
   card.querySelector('.asset-preview-text').textContent = asset.description;
   tagsContainer.append(...tagLabels(tagNames));
   button.addEventListener('click', () => openDetails(asset, tagNames));
@@ -89,8 +120,11 @@ exportButton.addEventListener('click', () => {
     sections.push(asset.description);
 
     const links = [];
-    if (asset.storeUrl) links.push(`- [Unity Asset Store](${asset.storeUrl})`);
+    if (asset.storeUrl) links.push(`- [${asset.storeLabel ?? 'Unity Asset Store'}](${asset.storeUrl})`);
     if (asset.postUrl) links.push(`- [Пост в Telegram](${asset.postUrl})`);
+    for (const id of asset.relatedPosts ?? []) {
+      links.push(`- [Пост №${id} в Telegram](${relatedPostUrl(asset, id)})`);
+    }
     if (links.length) sections.push(links.join('\n'));
 
     return sections.join('\n\n');

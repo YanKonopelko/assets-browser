@@ -14,7 +14,6 @@
     <header class="site-header">
       <div class="shell header-content">
         <div class="brand"><span class="brand-mark" aria-hidden="true"></span>Assets</div>
-        <span class="demo-label">Тестовая подборка</span>
       </div>
     </header>
 
@@ -44,6 +43,7 @@
         <button class="asset-button" type="button" aria-haspopup="dialog">
           <span class="asset-media">
             <img class="asset-image" alt="" decoding="async">
+            <span class="asset-no-preview" hidden>Без превью</span>
             <span class="asset-preview" aria-hidden="true"><span class="asset-preview-text"></span></span>
           </span>
           <span class="asset-caption">
@@ -69,6 +69,10 @@
             <a class="detail-link" id="detail-link" target="_blank" rel="noopener noreferrer">Открыть пост в Telegram</a>
             <a class="detail-link" id="detail-store-link" target="_blank" rel="noopener noreferrer" hidden>Unity Asset Store</a>
           </div>
+          <details id="detail-related" hidden>
+            <summary>Другие публикации в Telegram</summary>
+            <ul id="detail-related-links"></ul>
+          </details>
         </div>
       </div>
     </dialog>

@@ -64,15 +64,6 @@ button:focus-visible {
   clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
 }
 
-.demo-label {
-  border: 1px solid #433653;
-  border-radius: 2rem;
-  padding: .34rem .72rem;
-  background: #252034;
-  color: #d2bdfa;
-  font-size: .875rem;
-}
-
 main { padding-block: 1.75rem 3rem; }
 main:has(.export-button:not([hidden])) { padding-bottom: calc(5rem + env(safe-area-inset-bottom)); }
 
@@ -226,6 +217,15 @@ main:has(.export-button:not([hidden])) { padding-bottom: calc(5rem + env(safe-ar
   height: 100%;
   object-fit: cover;
 }
+
+.asset-no-preview {
+  display: grid;
+  height: 100%;
+  place-items: center;
+  color: #d4c8e5;
+}
+
+.asset-no-preview[hidden], .detail-image[hidden] { display: none; }
 
 .asset-preview {
   position: absolute;
@@ -444,6 +444,8 @@ body:has(dialog[open]) { overflow: hidden; }
   letter-spacing: -.035em;
 }
 
+.detail-image[hidden] ~ .detail-body h2 { padding-inline-end: 3rem; }
+
 .detail-body p {
   margin: 1rem 0 0;
   color: #ded9e8;
@@ -457,6 +459,10 @@ body:has(dialog[open]) { overflow: hidden; }
   gap: .6rem;
   margin-top: 1.1rem;
 }
+
+#detail-related { margin-top: 1rem; }
+#detail-related summary { cursor: pointer; }
+#detail-related a { color: #d2bdfa; }
 
 .detail-link {
   display: inline-flex;
