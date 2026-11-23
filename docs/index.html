@@ -6,9 +6,9 @@
     <meta name="description" content="Каталог игровых ассетов из темы Assets с поиском и фильтрацией по тегам.">
     <meta name="theme-color" content="#101016">
     <title>Assets — каталог игровых ассетов</title>
-    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./styles.css?v=2">
     <script defer src="./catalog.js"></script>
-    <script defer src="./gallery.js"></script>
+    <script defer src="./gallery.js?v=2"></script>
   </head>
   <body>
     <header class="site-header">
@@ -25,15 +25,17 @@
 
       <section aria-label="Галерея ассетов">
         <div class="filter-panel">
-          <div class="search" role="search">
-            <label for="asset-search">Поиск по карточкам</label>
-            <div class="search-controls">
-              <input id="asset-search" type="search" placeholder="Название, описание, тег или ссылка" autocomplete="off">
-              <button class="filter" id="clear-search" type="button" aria-label="Очистить поиск" hidden>Очистить</button>
-            </div>
-          </div>
           <div class="filter-bar">
             <button class="filter" id="all-filter" type="button">Все ассеты</button>
+            <form class="search" id="asset-search-form" role="search">
+              <div class="search-field">
+                <input id="asset-search" type="search" aria-label="Поиск по карточкам" placeholder="Поиск по карточкам" autocomplete="off">
+                <button class="search-clear" id="clear-search" type="button" aria-label="Очистить поиск" hidden>×</button>
+              </div>
+              <button class="search-submit" type="submit" aria-label="Найти ассеты">
+                <span class="search-icon" aria-hidden="true"></span>
+              </button>
+            </form>
             <p class="result-count" id="result-count" role="status"></p>
           </div>
           <div class="filters" id="filters" role="group" aria-label="Фильтры по тегам"></div>

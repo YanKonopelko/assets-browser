@@ -18,6 +18,8 @@ window.addEventListener('load', async () => {
   const exportButton = document.querySelector('#export-button');
   const dialog = document.querySelector('#asset-dialog');
   const search = document.querySelector('#asset-search');
+  const searchForm = document.querySelector('#asset-search-form');
+  const submitSearch = searchForm.querySelector('button[type="submit"]');
   const clearSearch = document.querySelector('#clear-search');
   const searchFor = (text) => {
     search.value = text;
@@ -48,6 +50,17 @@ window.addEventListener('load', async () => {
     check(visible().length === 0 && !document.querySelector('#empty-state').hidden, 'empty state is missing');
     reset();
     check(visible().length === cards.length, 'filters did not reset');
+
+    searchFor('FPS');
+    const fpsCards = visible();
+    check(fpsCards.length > 0 && fpsCards.length < cards.length, 'typing FPS did not narrow the catalog');
+    reset();
+    search.value = 'FPS';
+    submitSearch.click();
+    check(visible().length === fpsCards.length && visible().every((card, index) => card === fpsCards[index]),
+      'the magnifier did not run the search');
+    check(parseInt(document.querySelector('#result-count').textContent, 10) === fpsCards.length,
+      'the magnifier did not update the count');
 
     searchFor(asset.title.slice(0, 7).toUpperCase());
     check(!cards[0].hidden && visible().length < cards.length, 'title search did not match a partial query');
@@ -141,6 +154,21 @@ window.addEventListener('load', async () => {
     second.click();
     check(exportButton.hidden, 'export stayed visible after deselection');
     check(document.documentElement.scrollWidth <= innerWidth, 'page overflows the viewport');
+    const searchBox = search.getBoundingClientRect();
+    const submitBox = submitSearch.getBoundingClientRect();
+    const resetBox = document.querySelector('#all-filter').getBoundingClientRect();
+    const countBox = document.querySelector('#result-count').getBoundingClientRect();
+    check(searchBox.height >= 48 && submitBox.left > searchBox.right &&
+      submitBox.width === submitBox.height && getComputedStyle(submitSearch).borderRadius === '50%',
+    'the search button is not a circle to the right of the large field');
+    if (innerWidth > 640) {
+      check(searchBox.width > 480 && resetBox.right < searchBox.left && submitBox.right < countBox.left &&
+        resetBox.top < searchBox.bottom && resetBox.bottom > searchBox.top,
+      'the search is not between the reset button and the count');
+    } else {
+      check(resetBox.bottom < searchBox.top && searchBox.left === resetBox.left,
+        'the search did not wrap to a full-width row');
+    }
     const columns = getComputedStyle(document.querySelector('#gallery')).gridTemplateColumns.split(' ').length;
     check(columns === (innerWidth <= 560 ? 1 : 3), 'unexpected gallery layout');
   } catch (error) {

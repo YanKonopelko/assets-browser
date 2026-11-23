@@ -1,5 +1,6 @@
 const filters = document.querySelector('#filters');
 const allFilter = document.querySelector('#all-filter');
+const searchForm = document.querySelector('#asset-search-form');
 const searchInput = document.querySelector('#asset-search');
 const clearSearch = document.querySelector('#clear-search');
 const gallery = document.querySelector('#gallery');
@@ -160,6 +161,10 @@ exportButton.addEventListener('click', () => {
 });
 
 searchInput.addEventListener('input', updateGallery);
+searchForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  updateGallery();
+});
 clearSearch.addEventListener('click', () => {
   searchInput.value = '';
   searchInput.focus();
