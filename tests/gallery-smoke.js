@@ -17,6 +17,12 @@ window.addEventListener('load', async () => {
   const matches = (asset, option) => asset.tags[option.category]?.includes(option.label) ?? false;
   const exportButton = document.querySelector('#export-button');
   const dialog = document.querySelector('#asset-dialog');
+  const search = document.querySelector('#asset-search');
+  const clearSearch = document.querySelector('#clear-search');
+  const searchFor = (text) => {
+    search.value = text;
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+  };
 
   let result = 'passed';
   try {
@@ -43,6 +49,28 @@ window.addEventListener('load', async () => {
     reset();
     check(visible().length === cards.length, 'filters did not reset');
 
+    searchFor(asset.title.slice(0, 7).toUpperCase());
+    check(!cards[0].hidden && visible().length < cards.length, 'title search did not match a partial query');
+    searchFor(`  ${asset.title.split(' ')[0]}   ${asset.description.match(/[а-яё]{10,}/i)[0]}  `);
+    check(!cards[0].hidden && visible().length < cards.length, 'search did not combine title and description');
+    searchFor(firstFilter.label.toUpperCase());
+    check(!cards[0].hidden && visible().length < cards.length, 'search did not match a tag');
+    searchFor(asset.storeUrl);
+    check(visible().length === 1 && visible()[0] === cards[0], 'search did not match the store URL');
+    searchFor(asset.postUrl);
+    check(visible().length === 1 && visible()[0] === cards[0], 'search did not match the Telegram URL');
+
+    const conflictingFilter = options.find((option) => !matches(asset, option));
+    conflictingFilter.button.click();
+    check(visible().length === 0 && !document.querySelector('#empty-state').hidden,
+      'search did not combine with the tag filter');
+    clearSearch.click();
+    check(clearSearch.hidden && document.activeElement === search && conflictingFilter.button.getAttribute('aria-pressed') === 'true' &&
+      visible().length > 0 && cards[0].hidden, 'clearing search changed the tag filter or lost focus');
+    searchFor('zz-no-asset-match-123');
+    reset();
+    check(search.value === '' && visible().length === cards.length, 'reset did not clear search and filters');
+
     cards[0].querySelector('.asset-button').click();
     check(dialog.open && dialog.querySelector('#detail-description').textContent === asset.description,
       'card details did not open');
@@ -65,6 +93,10 @@ window.addEventListener('load', async () => {
     const relatedIndex = assetCatalog.findIndex((item) => item.relatedPosts?.length);
     if (relatedIndex >= 0) {
       const relatedAsset = assetCatalog[relatedIndex];
+      const relatedUrl = new URL(String(relatedAsset.relatedPosts[0]), relatedAsset.postUrl).href;
+      searchFor(relatedUrl);
+      check(!cards[relatedIndex].hidden, 'search did not match a related Telegram post');
+      reset();
       cards[relatedIndex].querySelector('.asset-button').click();
       const related = dialog.querySelector('#detail-related');
       const actual = [...related.querySelectorAll('a')].map((link) => link.href);
@@ -80,8 +112,10 @@ window.addEventListener('load', async () => {
     first.click();
     second.click();
     check(first.getAttribute('aria-pressed') === 'true' && !dialog.open, 'card selection did not toggle');
-    options.find((option) => !matches(asset, option)).button.click();
+    conflictingFilter.button.click();
     check(cards[0].hidden && exportButton.textContent === 'Экспорт (2)', 'filtering cleared the selection');
+    searchFor('zz-no-asset-match-123');
+    check(visible().length === 0 && exportButton.textContent === 'Экспорт (2)', 'search cleared the selection');
 
     let markdown;
     let filename;

@@ -1,5 +1,7 @@
 const filters = document.querySelector('#filters');
 const allFilter = document.querySelector('#all-filter');
+const searchInput = document.querySelector('#asset-search');
+const clearSearch = document.querySelector('#clear-search');
 const gallery = document.querySelector('#gallery');
 const template = document.querySelector('#asset-template');
 const resultCount = document.querySelector('#result-count');
@@ -18,6 +20,11 @@ const activeTags = new Set();
 const selectedAssets = new Set();
 const pluralRules = new Intl.PluralRules('ru');
 const assetForms = { one: 'ассет', few: 'ассета', many: 'ассетов', other: 'ассета' };
+const defaultStoreLabel = 'Unity Asset Store';
+
+function normalizeSearch(text) {
+  return text.normalize('NFKC').toLowerCase().replaceAll('ё', 'е');
+}
 
 function tagLabels(tags) {
   return tags.map((tag) => {
@@ -48,7 +55,7 @@ function openDetails(asset, tags) {
   detailStoreLink.hidden = !asset.storeUrl;
   if (asset.storeUrl) {
     detailStoreLink.href = asset.storeUrl;
-    detailStoreLink.textContent = asset.storeLabel ?? 'Unity Asset Store';
+    detailStoreLink.textContent = asset.storeLabel ?? defaultStoreLabel;
   } else {
     detailStoreLink.removeAttribute('href');
   }
@@ -104,8 +111,18 @@ const cards = assetCatalog.map((asset, index) => {
     exportButton.textContent = `Экспорт (${selectedAssets.size})`;
   });
   gallery.append(card);
+  const searchFields = [asset.title, asset.description, asset.imageAlt, ...tagNames];
+  if (asset.postUrl) searchFields.push(detailLink.textContent, asset.postUrl);
+  if (asset.storeUrl) searchFields.push(asset.storeLabel ?? defaultStoreLabel, asset.storeUrl);
+  if (asset.relatedPosts?.length) {
+    searchFields.push(detailRelated.querySelector('summary').textContent);
+    for (const id of asset.relatedPosts) {
+      searchFields.push(`Пост №${id}`, relatedPostUrl(asset, id));
+    }
+  }
   return {
     card,
+    searchText: normalizeSearch(searchFields.join('\n')),
     tagKeys: new Set(tagEntries.flatMap(([category, labels]) => labels.map((label) => `${category}:${label}`))),
   };
 });
@@ -120,7 +137,7 @@ exportButton.addEventListener('click', () => {
     sections.push(asset.description);
 
     const links = [];
-    if (asset.storeUrl) links.push(`- [${asset.storeLabel ?? 'Unity Asset Store'}](${asset.storeUrl})`);
+    if (asset.storeUrl) links.push(`- [${asset.storeLabel ?? defaultStoreLabel}](${asset.storeUrl})`);
     if (asset.postUrl) links.push(`- [Пост в Telegram](${asset.postUrl})`);
     for (const id of asset.relatedPosts ?? []) {
       links.push(`- [Пост №${id} в Telegram](${relatedPostUrl(asset, id)})`);
@@ -142,7 +159,15 @@ exportButton.addEventListener('click', () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 
+searchInput.addEventListener('input', updateGallery);
+clearSearch.addEventListener('click', () => {
+  searchInput.value = '';
+  searchInput.focus();
+  updateGallery();
+});
+
 allFilter.addEventListener('click', () => {
+  searchInput.value = '';
   activeTags.clear();
   updateGallery();
 });
@@ -180,19 +205,23 @@ for (const [category, name] of Object.entries(tagCategories)) {
 }
 
 function updateGallery() {
-  allFilter.setAttribute('aria-pressed', String(activeTags.size === 0));
+  const terms = normalizeSearch(searchInput.value).match(/\S+/g) ?? [];
+  clearSearch.hidden = searchInput.value.length === 0;
+  allFilter.setAttribute('aria-pressed', String(activeTags.size === 0 && terms.length === 0));
   for (const [tag, button] of filterButtons) {
     button.setAttribute('aria-pressed', String(activeTags.has(tag)));
   }
 
   const selectedTags = [...activeTags];
   let visible = 0;
-  for (const { card, tagKeys } of cards) {
-    card.hidden = !selectedTags.every((tag) => tagKeys.has(tag));
+  for (const { card, tagKeys, searchText } of cards) {
+    card.hidden = !selectedTags.every((tag) => tagKeys.has(tag)) ||
+      !terms.every((term) => searchText.includes(term));
     if (!card.hidden) visible += 1;
   }
   resultCount.textContent = `${visible} ${assetForms[pluralRules.select(visible)]}`;
   emptyState.hidden = visible > 0;
+  emptyState.textContent = terms.length ? 'По запросу ничего не найдено.' : 'По выбранным тегам ничего не найдено.';
 }
 
 dialog.querySelector('.detail-close').addEventListener('click', () => dialog.close());

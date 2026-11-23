@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Подборка игровых ассетов из темы Assets с фильтрацией по тегам.">
+    <meta name="description" content="Каталог игровых ассетов из темы Assets с поиском и фильтрацией по тегам.">
     <meta name="theme-color" content="#101016">
     <title>Assets — каталог игровых ассетов</title>
     <link rel="stylesheet" href="./styles.css">
@@ -25,6 +25,13 @@
 
       <section aria-label="Галерея ассетов">
         <div class="filter-panel">
+          <div class="search" role="search">
+            <label for="asset-search">Поиск по карточкам</label>
+            <div class="search-controls">
+              <input id="asset-search" type="search" placeholder="Название, описание, тег или ссылка" autocomplete="off">
+              <button class="filter" id="clear-search" type="button" aria-label="Очистить поиск" hidden>Очистить</button>
+            </div>
+          </div>
           <div class="filter-bar">
             <button class="filter" id="all-filter" type="button">Все ассеты</button>
             <p class="result-count" id="result-count" role="status"></p>
@@ -32,7 +39,7 @@
           <div class="filters" id="filters" role="group" aria-label="Фильтры по тегам"></div>
         </div>
         <ul class="gallery" id="gallery" role="list"></ul>
-        <p class="empty-state" id="empty-state" hidden>По выбранным тегам ничего не найдено.</p>
+        <p class="empty-state" id="empty-state" hidden></p>
         <noscript><p class="empty-state">Для работы галереи нужен JavaScript.</p></noscript>
       </section>
       <button class="export-button" id="export-button" type="button" hidden>Экспорт</button>
